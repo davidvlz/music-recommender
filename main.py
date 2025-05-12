@@ -29,7 +29,7 @@ from utils import (
 from decisiontree import get_decision_tree_model, SpotifyDecisionTreeModel
 from visualize import (
     visualize_kmeans_silhouette,
-    visualize_kmeans_pca
+    visualize_kmeans_pca, visualize_song_similarity, visualize_feature_importance, visualize_kmeans_cluster
 )
 from regression import train_regressors
 
@@ -104,8 +104,13 @@ def handle_song_recommendations():
     print(format_recommendations(km_recs))
 
     if config.VISUALIZATION_ENABLED and input("\nVisualize? (y/n): ").lower()=='y':
-        # You can add feature importance or cluster viz here
-        pass
+        sim_idxs = [rec['index'] for rec in knn_recs]
+        # 1) 2D similarity plot
+        visualize_song_similarity(idx, sim_idxs, processed_df, scaled_features)
+        # 2) feature‑importance bar chart
+        visualize_feature_importance(model, processed_df, idx, sim_idxs)
+        # 3) KMeans cluster plot
+        visualize_kmeans_cluster(idx, kmeans_model, processed_df, scaled_features)
 
     input("\nPress Enter to continue.")
 
@@ -222,9 +227,6 @@ def handle_analysis():
 
 
 def main():
-    """
-    Loop the CLI until exit.
-    """
     try:
         while True:
             clear_screen()

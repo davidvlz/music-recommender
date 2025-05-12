@@ -80,11 +80,6 @@ class SpotifyKMeansModel:
         if not hasattr(self.model, 'labels_'):
             raise ValueError("Model has not been fitted yet.")
 
-        # DEBUG: Print cluster info
-        unique_labels, counts = np.unique(self.model.labels_, return_counts=True)
-        cluster_sizes = dict(zip(unique_labels, counts))
-        print(f"DEBUG - All cluster sizes: {cluster_sizes}")
-        print(f"DEBUG - Requested cluster {cluster_label} size: {cluster_sizes.get(cluster_label, 0)}")
 
         return [i for i, label in enumerate(self.model.labels_) if label == cluster_label]
 
@@ -129,9 +124,6 @@ class SpotifyKMeansModel:
         print(f"Cluster size range: {stats['min_cluster_size']} to {stats['max_cluster_size']} songs")
         print(f"Average cluster size: {stats['avg_cluster_size']:.2f} songs")
         print(f"Median cluster size: {stats['median_cluster_size']} songs")
-        print("\nCluster size distribution:")
-        for label, count in sorted(cluster_sizes.items()):
-            print(f"  Cluster {label}: {count} songs")
 
         print("\nPotentially problematic clusters:")
         print(f"  Very small clusters (< mean-std): {stats['small_clusters']}")
